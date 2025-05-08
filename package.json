@@ -1,13 +1,13 @@
 {
-	"name": "ink-text-input",
-	"version": "6.0.0",
-	"description": "Text input component for Ink",
+	"name": "ink-text-input-improved",
+	"version": "1.0.0",
+	"description": "Text input component for Ink with improved keyboard shortcuts",
 	"license": "MIT",
-	"repository": "vadimdemedes/ink-text-input",
+	"repository": "vardan-developer/ink-text-input-improved",
 	"author": {
-		"name": "Vadim Demedes",
-		"email": "vadimdemedes@hey.com",
-		"url": "https://github.com/vadimdemedes"
+		"name": "Vardan Verma",
+		"email": "vardan.verma.developer@gmail.com",
+		"url": "https://github.com/vardan-developer"
 	},
 	"type": "module",
 	"exports": {
@@ -36,7 +36,14 @@
 		"stdin",
 		"keypress",
 		"search",
-		"query"
+		"query",
+		"shortcuts",
+		"terminal",
+		"command-line",
+		"keyboard",
+		"editing",
+		"macos",
+		"windows"
 	],
 	"dependencies": {
 		"chalk": "^5.3.0",
