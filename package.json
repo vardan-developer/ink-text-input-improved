@@ -1,6 +1,6 @@
 {
 	"name": "ink-text-input-improved",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Text input component for Ink with improved keyboard shortcuts",
 	"license": "MIT",
 	"repository": "vardan-developer/ink-text-input-improved",
