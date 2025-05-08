@@ -52,7 +52,7 @@ const getOperation = (input: string, key: any) => {
 		return 'deleteLine';
 	}
 
-	if ((key.backspace || key.delete) && key.meta) {
+	if ((key.backspace && key.meta) || (input === 'w' && key.ctrl)) {
 		// Delete complete word from the cursor to the beginning of the word
 		return 'deleteWord';
 	}
