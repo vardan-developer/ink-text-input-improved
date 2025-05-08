@@ -1,11 +1,27 @@
-# ink-text-input ![test](https://github.com/vadimdemedes/ink-text-input/workflows/test/badge.svg)
+# ink-text-input-improved ![test](https://github.com/vadimdemedes/ink-text-input/workflows/test/badge.svg)
 
-> Text input component for [Ink](https://github.com/vadimdemedes/ink).
+> Text input component for [Ink](https://github.com/vadimdemedes/ink) with enhanced keyboard shortcuts.
+
+This is a fork of [ink-text-input](https://github.com/vadimdemedes/ink-text-input) with additional keyboard shortcuts for better editing experience.
+
+## Added Features
+
+- Improved keyboard shortcuts:
+  - ⌘ + delete: Delete from cursor to beginning of line
+  - Left Alt+Backspace / ⎇ + delete: Delete word
+  - Ctrl/⎇+Left/Right: Move cursor by word
+  - ⌘/Alt + Left/Right: Move cursor to beginning/end of line
+  - Plus all original shortcuts
+
+## Platform Specific Support
+
+- Windows/Linux keyboard shortcuts
+- macOS keyboard shortcuts (Command/Option key support)
 
 ## Install
 
 ```sh
-npm install ink-text-input
+npm install ink-text-input-improved
 ```
 
 ## Usage
@@ -13,7 +29,7 @@ npm install ink-text-input
 ```jsx
 import React, {useState} from 'react';
 import {render, Box, Text} from 'ink';
-import TextInput from 'ink-text-input';
+import TextInput from 'ink-text-input-improved';
 
 const SearchQuery = () => {
 	const [query, setQuery] = useState('');
@@ -100,7 +116,7 @@ Initial value can be specified via `initialValue` prop, which is supported only 
 ```jsx
 import React from 'react';
 import {render, Box, Text} from 'ink';
-import {UncontrolledTextInput} from 'ink-text-input';
+import {UncontrolledTextInput} from 'ink-text-input-improved';
 
 const SearchQuery = () => {
 	const handleSubmit = query => {
