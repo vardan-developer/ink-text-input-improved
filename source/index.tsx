@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Text, useInput } from 'ink';
+import React, {useState, useEffect} from 'react';
+import {Text, useInput} from 'ink';
 import chalk from 'chalk';
-import type { Except } from 'type-fest';
+import type {Except} from 'type-fest';
 
 export type Props = {
 	/**
@@ -48,51 +48,62 @@ export type Props = {
 
 const getOperation = (input: string, key: any) => {
 	if (input === 'u' && key.ctrl) {
-		// delete complete line from the cursor to the beginning of the line
+		// Delete complete line from the cursor to the beginning of the line
 		return 'deleteLine';
 	}
-	else if ((key.backspace || key.delete) && key.meta) {
-		// delete complete word from the cursor to the beginning of the word
+
+	if ((key.backspace || key.delete) && key.meta) {
+		// Delete complete word from the cursor to the beginning of the word
 		return 'deleteWord';
 	}
-	else if (key.backspace || key.delete) {
-		// delete one character from the cursor
+
+	if (key.backspace || key.delete) {
+		// Delete one character from the cursor
 		return 'deleteChar';
 	}
-	else if ((key.leftArrow && key.ctrl) || (input === 'b' && key.meta)) {
-		// move cursor to the beginning of the word
+
+	if ((key.leftArrow && key.ctrl) || (input === 'b' && key.meta)) {
+		// Move cursor to the beginning of the word
 		return 'moveToWordStart';
 	}
-	else if ((key.rightArrow && key.ctrl) || (input === 'f' && key.meta)) {
-		// move cursor to the end of the word
+
+	if ((key.rightArrow && key.ctrl) || (input === 'f' && key.meta)) {
+		// Move cursor to the end of the word
 		return 'moveToWordEnd';
 	}
-	else if ((key.leftArrow && key.meta) || (input === 'a' && key.ctrl)) {
-		// move cursor to the beginning of the line
+
+	if ((key.leftArrow && key.meta) || (input === 'a' && key.ctrl)) {
+		// Move cursor to the beginning of the line
 		return 'moveToLineStart';
 	}
-	else if ((key.rightArrow && key.meta) || (input === 'e' && key.ctrl)) {
-		// move cursor to the end of the line
+
+	if ((key.rightArrow && key.meta) || (input === 'e' && key.ctrl)) {
+		// Move cursor to the end of the line
 		return 'moveToLineEnd';
 	}
-	else if (key.leftArrow) {
-		// move cursor one character to the left
+
+	if (key.leftArrow) {
+		// Move cursor one character to the left
 		return 'moveLeft';
 	}
-	else if (key.rightArrow) {
-		// move cursor one character to the right
+
+	if (key.rightArrow) {
+		// Move cursor one character to the right
 		return 'moveRight';
 	}
-	else if (key.return) {
-		// submit the input
+
+	if (key.return) {
+		// Submit the input
 		return 'submit';
 	}
-	else if (input.length > 0) {
-		// insert the input
+
+	if (input.length > 0) {
+		// Insert the input
 		return 'insert';
 	}
+
 	return null;
-}
+};
 
 function TextInput({
 	value: originalValue,
@@ -109,7 +120,7 @@ function TextInput({
 		cursorWidth: 0,
 	});
 
-	const { cursorOffset, cursorWidth } = state;
+	const {cursorOffset, cursorWidth} = state;
 
 	useEffect(() => {
 		setState(previousState => {
@@ -180,88 +191,128 @@ function TextInput({
 			let nextValue = originalValue;
 			let nextCursorWidth = 0;
 
-			if (operation === 'moveLeft') {
-				if (showCursor) {
-					nextCursorOffset--;
+			switch (operation) {
+				case 'moveLeft': {
+					if (showCursor) {
+						nextCursorOffset--;
+					}
+
+					break;
 				}
-			} else if (operation === 'moveRight') {
-				if (showCursor) {
-					nextCursorOffset++;
+
+				case 'moveRight': {
+					if (showCursor) {
+						nextCursorOffset++;
+					}
+
+					break;
 				}
-			} else if (operation === 'deleteChar') {
-				if (cursorOffset > 0) {
+
+				case 'deleteChar': {
+					if (cursorOffset > 0) {
+						nextValue =
+							originalValue.slice(0, cursorOffset - 1) +
+							originalValue.slice(cursorOffset, originalValue.length);
+
+						nextCursorOffset--;
+					}
+
+					break;
+				}
+
+				case 'insert': {
 					nextValue =
-						originalValue.slice(0, cursorOffset - 1) +
+						originalValue.slice(0, cursorOffset) +
+						input +
 						originalValue.slice(cursorOffset, originalValue.length);
 
-					nextCursorOffset--;
-				}
-			} else if (operation === 'insert') {
-				nextValue =
-					originalValue.slice(0, cursorOffset) +
-					input +
-					originalValue.slice(cursorOffset, originalValue.length);
+					nextCursorOffset += input.length;
 
-				nextCursorOffset += input.length;
+					if (input.length > 1) {
+						nextCursorWidth = input.length;
+					}
 
-				if (input.length > 1) {
-					nextCursorWidth = input.length;
-				}
-			} else if (operation === 'deleteLine') {
-				nextCursorOffset = 0;
-				nextValue = originalValue.slice(cursorOffset);
-			} else if (operation === 'deleteWord') {
-
-				const deleteStart = cursorOffset;
-				let deleteEnd = cursorOffset;
-
-				while (deleteEnd > 0 && originalValue[deleteEnd - 1] === ' ') {
-					deleteEnd--;
-				}
-				while (deleteEnd > 0 && originalValue[deleteEnd - 1] !== ' ') {
-					deleteEnd--;
+					break;
 				}
 
-				if (deleteEnd === deleteStart) {
-					// no word to delete
-					return;
+				case 'deleteLine': {
+					nextCursorOffset = 0;
+					nextValue = originalValue.slice(cursorOffset);
+					break;
 				}
 
-				nextValue =
-					originalValue.slice(0, deleteEnd) +
-					originalValue.slice(deleteStart);
+				case 'deleteWord': {
+					const deleteStart = cursorOffset;
+					let deleteEnd = cursorOffset;
 
-				nextCursorOffset = deleteEnd;
-			} else if (operation === 'moveToWordStart') {
+					while (deleteEnd > 0 && originalValue[deleteEnd - 1] === ' ') {
+						deleteEnd--;
+					}
 
-				const startPosition = cursorOffset;
-				let endPosition = startPosition;
+					while (deleteEnd > 0 && originalValue[deleteEnd - 1] !== ' ') {
+						deleteEnd--;
+					}
 
-				while (endPosition > 0 && originalValue[endPosition - 1] === ' ') {
-					endPosition--;
-				}
-				while (endPosition > 0 && originalValue[endPosition - 1] !== ' ') {
-					endPosition--;
-				}
+					if (deleteEnd === deleteStart) {
+						// No word to delete
+						return;
+					}
 
-				nextCursorOffset = endPosition;
-			} else if (operation === 'moveToWordEnd') {
+					nextValue =
+						originalValue.slice(0, deleteEnd) +
+						originalValue.slice(deleteStart);
 
-				const startPosition = cursorOffset;
-				let endPosition = startPosition;
-
-				while (endPosition < originalValue.length && originalValue[endPosition] === ' ') {
-					endPosition++;
-				}
-				while (endPosition < originalValue.length && originalValue[endPosition] !== ' ') {
-					endPosition++;
+					nextCursorOffset = deleteEnd;
+					break;
 				}
 
-				nextCursorOffset = endPosition;
-			} else if (operation === 'moveToLineStart') {
-				nextCursorOffset = 0;
-			} else if (operation === 'moveToLineEnd') {
-				nextCursorOffset = originalValue.length;
+				case 'moveToWordStart': {
+					const startPosition = cursorOffset;
+					let endPosition = startPosition;
+
+					while (endPosition > 0 && originalValue[endPosition - 1] === ' ') {
+						endPosition--;
+					}
+
+					while (endPosition > 0 && originalValue[endPosition - 1] !== ' ') {
+						endPosition--;
+					}
+
+					nextCursorOffset = endPosition;
+					break;
+				}
+
+				case 'moveToWordEnd': {
+					const startPosition = cursorOffset;
+					let endPosition = startPosition;
+
+					while (
+						endPosition < originalValue.length &&
+						originalValue[endPosition] === ' '
+					) {
+						endPosition++;
+					}
+
+					while (
+						endPosition < originalValue.length &&
+						originalValue[endPosition] !== ' '
+					) {
+						endPosition++;
+					}
+
+					nextCursorOffset = endPosition;
+					break;
+				}
+
+				case 'moveToLineStart': {
+					nextCursorOffset = 0;
+					break;
+				}
+
+				case 'moveToLineEnd': {
+					nextCursorOffset = originalValue.length;
+					break;
+				}
 			}
 
 			if (cursorOffset < 0) {
@@ -281,7 +332,7 @@ function TextInput({
 				onChange(nextValue);
 			}
 		},
-		{ isActive: focus },
+		{isActive: focus},
 	);
 
 	return (
